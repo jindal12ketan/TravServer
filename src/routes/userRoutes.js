@@ -4,14 +4,16 @@ const {
   getUsers,
   getUserByEmail,
   deleteUser,
+  forgotPassword,
 } = require("../controllers/userController");
 const { loginUser } = require("../controllers/loginController");
 const router = express.Router();
 
-router.post("/create", createUser);
 router.get("/", getUsers);
 router.get("/:email", getUserByEmail);
-router.delete("/:email", deleteUser);
+router.post("/create", createUser);
 router.post("/login", loginUser);
+router.delete("/:email", deleteUser);
+router.put("/forgotPassword/:email", forgotPassword);
 
 module.exports = router;

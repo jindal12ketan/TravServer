@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { sendMail } = require("../services/mailService");
+const { sendMail, sendPasswordResetEmail } = require("../services/mailService");
 
 const createUser = async (req, res) => {
   try {
@@ -52,9 +52,32 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const newPassword = req.body.newPassword;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send("No data found for the provided email.");
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    sendPasswordResetEmail(email);
+
+    res.send("Password updated successfully.");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
 module.exports = {
   createUser,
   getUsers,
   getUserByEmail,
   deleteUser,
+  forgotPassword,
 };
