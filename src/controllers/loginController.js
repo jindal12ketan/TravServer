@@ -1,5 +1,5 @@
 const User = require("../models/User");
-
+const LoginDTO = require("../dtos/loginDto");
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -12,8 +12,8 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
     const token = user.generateToken();
-    console.log({ ...user._doc, token });
-    return res.status(200).json({ ...user._doc, token });
+    const loginDTO = new LoginDTO(user.name, user.email, token);
+    return res.status(200).json(loginDTO);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
