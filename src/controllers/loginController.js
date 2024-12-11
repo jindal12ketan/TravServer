@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const LoginDTO = require("../dtos/LoginDTO");
+const LoginDTO = require("../dto/LoginDTO");
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
