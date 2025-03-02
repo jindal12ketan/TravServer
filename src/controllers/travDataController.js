@@ -27,10 +27,19 @@ const buildFilters = ({ category, title, minPrice, maxPrice }) => {
 
 const getFilterTravData = async (req, res) => {
   try {
-    const { sort } = req.query;
+    const { sort, page, limit } = req.query;
     const filters = buildFilters(req.body);
-
     const pipeline = [{ $match: filters }];
+
+    if (page && limit) {
+      pipeline.push({
+        $skip: page * limit,
+      });
+      pipeline.push({
+        $limit: parseInt(limit),
+      });
+    }
+
     if (sort) {
       pipeline.push({
         $sort: {
@@ -57,17 +66,15 @@ const saveTravData = async (req, res) => {
       description,
       price,
       image,
-      location: {
-        latitude,
-        longitude,
-      },
+      location: { latitude, longitude },
       reviews: [],
     });
 
     await newTravData.save();
     res.status(201).json(newTravData);
   } catch (error) {
-    res.status(500).send("Internal server error");
+    console.error("Error saving travel data:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

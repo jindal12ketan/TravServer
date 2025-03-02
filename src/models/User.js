@@ -7,7 +7,7 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const userSchema = new mongoose.Schema({
   name: String,
   email: String,
-  password: String,
+  password: { type: String, select: false },
 });
 
 userSchema.pre("save", async function (next) {
@@ -31,4 +31,6 @@ userSchema.methods.generateToken = function () {
   return token;
 };
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

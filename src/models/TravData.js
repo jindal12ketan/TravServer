@@ -11,13 +11,7 @@ const travDataSchema = new mongoose.Schema({
     latitude: Number,
     longitude: Number,
   },
-  reviews: [
-    {
-      customerName: String,
-      rating: Number,
-      comment: String,
-    },
-  ],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
 });
 
 travDataSchema.pre("save", async function (next) {
@@ -35,4 +29,6 @@ travDataSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = mongoose.model("TravData", travDataSchema);
+const TravData = mongoose.model("TravData", travDataSchema);
+
+module.exports = TravData;

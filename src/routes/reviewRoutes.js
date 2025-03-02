@@ -3,6 +3,6 @@ const { addReview } = require("../controllers/reviewController");
 const auth = require("../services/auth");
 const router = express.Router();
 
-router.post("/:id/reviews", auth, addReview);
+router.post("/:id", addReview);
 
 module.exports = router;
