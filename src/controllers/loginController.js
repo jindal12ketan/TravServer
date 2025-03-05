@@ -1,9 +1,10 @@
 const User = require("../models/User");
 const LoginDTO = require("../dto/LoginDTO");
+
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
