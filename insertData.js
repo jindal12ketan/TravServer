@@ -69,4 +69,4 @@ async function importData() {
 }
 
 // Call the function to import data
-importData();
+// importData();
