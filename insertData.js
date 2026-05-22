@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const TravData = require("./src/models/TravData");
 const Review = require("./src/models/Review");
-const data = require("./Data"); // Assuming this contains the travel data
+const { Travdata: data } = require("./Data"); // Assuming this contains the travel data
 
 require("dotenv").config();
 
@@ -39,7 +39,11 @@ async function importData() {
       const savedTravData = await newTravData.save();
 
       let reviewId = null;
-      if (item.reviews && Array.isArray(item.reviews) && item.reviews.length > 0) {
+      if (
+        item.reviews &&
+        Array.isArray(item.reviews) &&
+        item.reviews.length > 0
+      ) {
         const review = item.reviews[0]; // Only take the first review
 
         const newReview = new Review({
@@ -69,4 +73,4 @@ async function importData() {
 }
 
 // Call the function to import data
-// importData();
+importData();

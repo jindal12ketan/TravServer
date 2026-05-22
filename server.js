@@ -1,3 +1,7 @@
+const path = require("path");
+require("dotenv").config({
+  path: path.resolve(__dirname, ".env.development.local"),
+});
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -12,8 +16,6 @@ const errorHandler = require("./src/utils/errorHandler");
 const app = express();
 const port = process.env.PORT || 7070;
 
-connectDB();
-
 app.use(cors());
 app.use(express.json());
 
@@ -25,6 +27,17 @@ app.use("/form", formRoutes);
 // Error handling middleware
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();

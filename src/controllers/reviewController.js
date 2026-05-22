@@ -27,16 +27,25 @@ const getReviews = async (req, res) => {
 
 const addReview = async (req, res) => {
   try {
-    const { id } = req.query;
-    const { rating, comment, customerId } = req.body;
+    const id = req.params.id || req.query.id;
+    const {
+      rating,
+      comment,
+      customerId: customerIdFromBody,
+      customerName,
+    } = req.body;
+    const customerId = req.user?.id || customerIdFromBody;
+    const parsedRating = Number(rating);
 
     if (
       !id ||
       !customerId ||
       !mongoose.Types.ObjectId.isValid(id) ||
       !mongoose.Types.ObjectId.isValid(customerId) ||
-      rating < 1 ||
-      rating > 5
+      !comment ||
+      comment.trim().length === 0 ||
+      parsedRating < 1 ||
+      parsedRating > 5
     ) {
       return res.status(400).json({ message: "Invalid input data" });
     }
@@ -58,13 +67,24 @@ const addReview = async (req, res) => {
     const review = await new Review({
       customerId,
       productId: id,
-      rating,
-      comment,
+      rating: parsedRating,
+      comment: comment.trim(),
     }).save();
     await TravData.findByIdAndUpdate(id, { $push: { reviews: review._id } });
 
-    res.status(201).json({ message: "Review added successfully", review });
+    res.status(201).json({
+      message: "Review added successfully",
+      review: {
+        ...review.toObject(),
+        customerName: customerName || undefined,
+      },
+    });
   } catch (error) {
+    if (error?.code === 11000) {
+      return res
+        .status(400)
+        .json({ message: "User has already reviewed this product" });
+    }
     res.status(500).json({ message: "Internal server error" });
   }
 };

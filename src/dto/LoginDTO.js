@@ -1,6 +1,7 @@
 class LoginDTO {
-  constructor(name, email, token) {
+  constructor(id, name, email, token) {
     this.user = {
+      id,
       name: name,
       email: email,
     };

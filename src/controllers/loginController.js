@@ -13,7 +13,7 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = user.generateToken();
-    const loginDTO = new LoginDTO(user.name, user.email, token);
+    const loginDTO = new LoginDTO(user._id, user.name, user.email, token);
     return res.status(200).json(loginDTO);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
